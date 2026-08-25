@@ -1,0 +1,22 @@
+=== DB DIAGNOSTIC ===
+DB Path: C:\Users\lbeneforti\OneDrive - Satiz TPM\Desktop\Project\VDL Manager\vdl_manager.db
+Exists: True
+Size: 1118208 bytes
+Tables: ['vdl_projects', 'sqlite_sequence', 'vdl_documents', 'contacts', 'email_settings', 'vdl_suppliers', 'project_suppliers', 'supplier_transmittals', 'vdl_supplier_documents', 'users', 'user_sessions']
+Table 'vdl_projects' row count: 1
+Table 'sqlite_sequence' row count: 7
+Table 'vdl_documents' row count: 0
+Table 'contacts' row count: 0
+Table 'email_settings' row count: 7
+Table 'vdl_suppliers' row count: 4
+Table 'project_suppliers' row count: 0
+Table 'supplier_transmittals' row count: 0
+Table 'vdl_supplier_documents' row count: 0
+Table 'users' row count: 3
+Table 'user_sessions' row count: 8
+Users:
+  - ID: 1, Username: ADMIN, Role: Admin, Password: ADMIN, CreatedAt: 2026-05-25 08:22:59
+  - ID: 15, Username: Asia, Role: Project Manager, Password: Asia, CreatedAt: 2026-05-25 08:46:36
+  - ID: 18, Username: LUCA, Role: Project Engineering, Password: Luca, CreatedAt: 2026-05-25 09:54:58
+Projects:
+  - ID: 11, Name: POP

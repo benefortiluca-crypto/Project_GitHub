@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VDL Manager Pro - Vendor Document List Manager</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <!-- Top Horizontal Header -->
+    <header>
+        <div class="logo">
+            <span class="logo-icon">📁</span>
+            <h1>VDL Manager Pro <span style="font-weight: 300; opacity: 0.5;">|</span> <span id="page-title" style="font-weight: 400; font-size: 1.1rem; color: var(--text-muted);">Dashboard</span></h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="project-selector" style="display: flex; align-items: center; gap: 10px;">
+                <label for="global-project-select" style="font-size: 13px; font-weight: 600; color: var(--text-muted);"><i class="fa-solid fa-folder-tree"></i> Progetto Attivo:</label>
+                <select id="global-project-select" class="form-control" style="width: 250px; background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-main);">
+                    <option value="">Nessun progetto selezionato</option>
+                </select>
+            </div>
+            <div class="user-status" id="header-user-status" style="display: none;">
+                <div class="status-dot"></div>
+                <span id="system-status-text">Connesso</span>
+                <span style="margin: 0 6px; opacity: 0.25;">|</span>
+                <span id="header-username" style="font-weight: 600;">ADMIN</span>
+                <span id="header-role" class="badge badge-admin" style="margin-left: 6px; font-size: 10px; padding: 2px 6px;">Admin</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <ul class="nav-links">
+                <li class="nav-item" data-target="project-data" id="nav-project-data">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    <span>Dati Progetto</span>
+                </li>
+                <li class="nav-item active" data-target="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-target="table-editor">
+                    <i class="fa-solid fa-table"></i>
+                    <span>Tabella VDL</span>
+                </li>
+                <li class="nav-item" data-target="project-specifications" id="nav-project-specifications" style="display: none;">
+                    <i class="fa-solid fa-file-shield"></i>
+                    <span>Specifiche Progetto</span>
+                </li>
+                <li class="nav-item" data-target="revisione-documentazione" id="nav-revisione-documentazione" style="display: none;">
+                    <i class="fa-solid fa-code-compare"></i>
+                    <span>Revisione Documentazione</span>
+                </li>
+                <li class="nav-item" data-target="supplier-vdl-editor" id="nav-supplier-vdl-editor">
+                    <i class="fa-solid fa-table-list" style="color: var(--accent);"></i>
+                    <span style="color: var(--accent);">VDL Fornitori</span>
+                </li>
+                <li class="nav-item" data-target="transmittal-ritorno-cliente" id="nav-transmittal-ritorno-cliente">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>Transmittal Ritorno Cliente</span>
+                </li>
+                <li class="nav-item" data-target="transmittal-invio-cliente" id="nav-transmittal-invio-cliente">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>Transmittal Invio Cliente</span>
+                </li>
+                <li class="nav-item" data-target="reminder-center">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Crea Reminder</span>
+                </li>
+                <li class="nav-item" data-target="contacts-db">
+                    <i class="fa-solid fa-address-book"></i>
+                    <span>Rubrica Contatti</span>
+                </li>
+                <li class="nav-item" data-target="suppliers-db">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Anagrafica Fornitori</span>
+                </li>
+                <li class="nav-item" data-target="transmittal-fornitore-in" id="nav-nav-transmittal-fornitore-in">
+                    <i class="fa-solid fa-file-circle-arrow-down"></i>
+                    <span>Transmittal Fornitore IN</span>
+                </li>
+                <li class="nav-item" data-target="transmittal-fornitore-out" id="nav-nav-transmittal-fornitore-out">
+                    <i class="fa-solid fa-file-circle-arrow-up"></i>
+                    <span>Transmittal Fornitore OUT</span>
+                </li>
+                <li class="nav-item" data-target="settings-section">
+                    <i class="fa-solid fa-gears"></i>
+                    <span>Impostazioni</span>
+                </li>
+                <li class="nav-item" data-target="admin-access-control" id="nav-admin-access-control" style="display: none;">
+                    <i class="fa-solid fa-users-gear" style="color: #ef4444;"></i>
+                    <span style="color: #ef4444; font-weight: 700;">Amministrazione</span>
+                </li>
+                <li class="nav-item logout-btn-nav" id="nav-logout-btn" style="display: none;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Esci Sessione</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <p>VDL Manager Pro v1.0</p>
+                <p style="margin-top: 4px; opacity: 0.6;">Sviluppato per Satiz TPM</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="content-body">
+            <!-- 0. PROJECT DATA SECTION -->
+            <section id="project-data" class="view-section">
+                <div class="glass-card">
+                    <h3 class="card-title" id="proj-card-title">
+                        <i class="fa-solid fa-folder-plus text-accent"></i> 
+                        Crea Nuovo Progetto
+                    </h3>
+                    <p class="text-muted" id="proj-card-desc" style="margin-bottom: 20px;">Inserisci i metadati del progetto. Verrà creata una nuova scheda progetto in cui potrai successivamente importare la VDL e la Rubrica Contatti.</p>
+                    
+                    <form id="new-project-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="form-group">
+                                <label for="proj-company">Company</label>
+                                <input type="text" class="form-control" id="proj-company" required placeholder="Es. Eni, Snam...">
+                            </div>
+                            <div class="form-group">
+                                <label for="proj-contractor">Contractor</label>
+                                <input type="text" class="form-control" id="proj-contractor" required placeholder="Es. Saipem, Technip...">
+                            </div>
+                            <div class="form-group">
+                                <label for="proj-contractor-num">Numero Progetto Contractor</label>
+                                <input type="text" class="form-control" id="proj-contractor-num" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="proj-vendor-num">Numero Progetto Vendor</label>
+                                <input type="text" class="form-control" id="proj-vendor-num" required>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="proj-name">Nome Progetto (Descrizione)</label>
+                                <input type="text" class="form-control" id="proj-name" required placeholder="Es. Upgrade Impianto Alpha...">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: right; display: flex; justify-content: flex-end; gap: 10px;">
+                            <button type="button" class="btn btn-secondary" id="btn-deselect-project-data" style="display: none;" onclick="deselectActiveProjectFromData()">
+                                <i class="fa-solid fa-folder-minus"></i> Deseleziona Progetto Attivo
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="btn-create-project">
+                                <i class="fa-solid fa-floppy-disk"></i> <span id="btn-create-project-text">Crea e Salva Progetto</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- 1. DASHBOARD SECTION -->
+            <section id="dashboard" class="view-section active">
+                <!-- Metrics Summary -->
+                <div class="metrics-row">
+                    <div class="metric-card success-card">
+                        <div class="metric-info">
+                            <h4>Progetto Attivo</h4>
+                            <div class="metric-value" id="stat-project-name" style="font-size: 14px; margin-top: 8px; word-break: break-all; max-height: 50px; overflow: hidden; line-height: 1.2;">Nessuno</div>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-folder-open"></i>
+                        </div>
+                    </div>
+                    <div class="metric-card" style="cursor: pointer;" onclick="openDashboardDetails('all')">
+                        <div class="metric-info">
+                            <h4>Totale Documenti</h4>
+                            <div class="metric-value" id="stat-total-docs">0</div>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                    </div>
+                    <div class="metric-card warning-card">
+                        <div class="metric-info">
+                            <h4>Attori (Hands)</h4>
+                            <div class="metric-value" id="stat-hands-count">0</div>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="metric-card alert-card" style="cursor: pointer;" onclick="openDashboardDetails('overdue')">
+                        <div class="metric-info">
+                            <h4>Documenti in Ritardo</h4>
+                            <div class="metric-value" id="stat-overdue-docs">0</div>
+                        </div>
+                        <div class="metric-icon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload VDL Zone -->
+                <div class="glass-card">
+                    <h3 class="card-title">
+                        <i class="fa-solid fa-cloud-arrow-up text-accent"></i> 
+                        Importazione Vendor Document List (VDL)
+                    </h3>
+                    <div class="upload-zone" id="upload-zone">
+                        <i class="fa-solid fa-file-excel upload-icon"></i>
+                        <h3 style="margin-bottom: 8px; font-weight: 600;">Seleziona o trascina il file VDL</h3>
+                        <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">Supporta file Excel (.xlsx, .xls) o CSV. Verranno aggiunte automaticamente le colonne di tracking.</p>
+                        <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                            <i class="fa-solid fa-file-import"></i> Sfoglia File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Project Info Card -->
+                <div class="glass-card" id="project-details-card" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                        <h3 class="card-title" style="margin-bottom: 0;"><i class="fa-solid fa-circle-info text-accent"></i> Dettagli Progetto Corrente</h3>
+                        <button id="btn-delete-project" class="btn btn-danger" onclick="deleteActiveProject()" style="padding: 0.5rem 1rem; font-size: 0.85rem;"><i class="fa-solid fa-trash"></i> Elimina Progetto</button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; font-size: 13px;">
+                        <div>
+                            <p class="text-muted">Nome Progetto:</p>
+                            <p style="font-weight: 600; font-size: 15px; margin-top: 4px;" id="info-proj-name">-</p>
+                        </div>
+                        <div>
+                            <p class="text-muted">Data Caricamento:</p>
+                            <p style="font-weight: 600; font-size: 15px; margin-top: 4px;" id="info-proj-date">-</p>
+                        </div>
+                        <div>
+                            <p class="text-muted">Colonne Caricate:</p>
+                            <p style="font-weight: 600; font-size: 15px; margin-top: 4px;" id="info-proj-cols">-</p>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <button class="btn btn-teal" id="btn-goto-table">
+                                <i class="fa-solid fa-table-cells"></i> Vai alla Tabella VDL
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Status Card -->
+                <div class="glass-card" id="project-status-card" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                        <h3 class="card-title" style="margin-bottom: 0;">
+                            <i class="fa-solid fa-chart-bar text-accent"></i> Stato Documenti Progetto
+                        </h3>
+                        <button class="btn btn-secondary" onclick="loadProjectStatus()" style="padding: 0.4rem 0.9rem; font-size: 0.8rem;">
+                            <i class="fa-solid fa-arrows-rotate"></i> Aggiorna
+                        </button>
+                    </div>
+                    <div id="project-status-content" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; min-height: 60px;">
+                        <!-- Injected dynamically -->
+                        <div style="color: var(--text-muted); font-size: 13px; font-style: italic;">Caricamento stato in corso...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1B. TRANSMITTAL RITORNO CLIENTE SECTION -->
+            <section id="transmittal-ritorno-cliente" class="view-section">
+                <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+                    <h3 class="card-title" style="color: var(--accent-light, #38bdf8); margin-bottom: 8px;">
+                        <i class="fa-solid fa-file-import"></i> TRANSMITTAL RITORNO CLIENTE
+                    </h3>
+                    <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                        Registra il transmittal ricevuto dal Cliente. Il sistema compilerà automaticamente le prime colonne vuote nel ciclo di tracciamento.
+                    </p>
+                    
+                    <!-- Alert when no project is loaded -->
+                    <div class="project-warning" id="warning-tr-ritorno-cliente" style="padding: 20px; text-align: center; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: #f59e0b; margin-bottom: 10px; display: block;"></i>
+                        <span style="font-size: 14px; font-weight: 500; color: #f59e0b;">Nessun Progetto Attivo</span>
+                        <p class="text-muted" style="font-size: 12px; margin-top: 6px; margin-bottom: 0;">Seleziona un progetto attivo dal menu in alto per abilitare la registrazione dei transmittal.</p>
+                    </div>
+
+                    <form id="form-tr-ritorno-cliente" style="display: none; flex-direction: column; gap: 16px;">
+                        <div class="form-group">
+                            <label for="tr-num-ritorno-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Numero Transmittal Ritorno Cliente</label>
+                            <input type="text" class="form-control" id="tr-num-ritorno-cliente" required placeholder="Es. TR-CL-001">
+                        </div>
+                        <div class="form-group">
+                            <label for="tr-doc-ritorno-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Numero Documento</label>
+                            <input type="text" class="form-control" id="tr-doc-ritorno-cliente" required placeholder="Inserisci il codice documento...">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label for="tr-code-ritorno-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Codice di Ritorno</label>
+                                <input type="text" class="form-control" id="tr-code-ritorno-cliente" required placeholder="Es. A, B, C...">
+                            </div>
+                            <div class="form-group">
+                                <label for="tr-date-ritorno-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Data di Ritorno</label>
+                                <input type="date" class="form-control" id="tr-date-ritorno-cliente" required>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button type="submit" class="btn btn-teal w-100" style="padding: 12px; font-weight: 600;">
+                                <i class="fa-solid fa-circle-check"></i> Registra Transmittal Ritorno Cliente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 1C. TRANSMITTAL INVIO CLIENTE SECTION -->
+            <section id="transmittal-invio-cliente" class="view-section">
+                <div style="display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: start;">
+                    <!-- Left: Form to Register Client Transmittal -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Alert when no project is loaded -->
+                        <div class="project-warning" id="warning-tr-invio-cliente" style="padding: 20px; text-align: center; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: #f59e0b; margin-bottom: 10px; display: block;"></i>
+                            <span style="font-size: 14px; font-weight: 500; color: #f59e0b;">Nessun Progetto Attivo</span>
+                            <p class="text-muted" style="font-size: 12px; margin-top: 6px; margin-bottom: 0;">Seleziona un progetto attivo dal menu in alto per abilitare la registrazione dei transmittal.</p>
+                        </div>
+                        
+                        <div class="glass-card" id="form-tr-invio-cliente-card" style="display: none; padding: 24px;">
+                            <h3 class="card-title" style="color: #f43f5e; margin-bottom: 8px;">
+                                <i class="fa-solid fa-file-export"></i> TRANSMITTAL INVIO CLIENTE
+                            </h3>
+                            <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                                Registra il transmittal inviato al Cliente. Il sistema compilerà automaticamente le prime colonne vuote nel ciclo di tracciamento.
+                            </p>
+                            <form id="form-tr-invio-cliente" style="display: flex; flex-direction: column; gap: 16px;">
+                                <div class="form-group">
+                                    <label for="tr-num-invio-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Numero Transmittal Invio Cliente</label>
+                                    <input type="text" class="form-control" id="tr-num-invio-cliente" required placeholder="Es. TR-OUT-001">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-doc-invio-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Numero Documento</label>
+                                    <input type="text" class="form-control" id="tr-doc-invio-cliente" required placeholder="Inserisci il codice documento...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-date-invio-cliente" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; color: var(--text-muted);">Data di Invio</label>
+                                    <input type="date" class="form-control" id="tr-date-invio-cliente" required>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-rose w-100" style="padding: 12px; font-weight: 600; background-color: #e11d48; border-color: #e11d48;">
+                                        <i class="fa-solid fa-circle-check"></i> Registra Transmittal Invio Cliente
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Right: Transmittal Documents Preview Table -->
+                    <div class="glass-card" style="padding: 24px; display: flex; flex-direction: column; height: 100%; min-height: 500px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <h3 class="card-title" style="margin-bottom: 0;">
+                                <i class="fa-solid fa-eye text-accent"></i> Registro Transmittal Invio Cliente
+                            </h3>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="search-box" style="margin-bottom: 0;">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="client-tr-search" placeholder="Filtra transmittal o doc...">
+                                </div>
+                                <button class="btn btn-secondary" id="btn-copy-client-tr-table" style="border-color: var(--accent); color: var(--accent); white-space: nowrap;">
+                                    <i class="fa-solid fa-copy"></i> Copia Tabella
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="flex: 1; overflow-x: auto; max-height: 480px;">
+                            <table class="grid-table" style="width: 100%; border-collapse: collapse;" id="client-tr-preview-table">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 12px; text-align: left; background: rgba(255,255,255,0.02); border-bottom: 2px solid var(--border-color); font-weight: 600;">Data Invio</th>
+                                        <th style="padding: 12px; text-align: left; background: rgba(255,255,255,0.02); border-bottom: 2px solid var(--border-color); font-weight: 600;">Numero Transmittal</th>
+                                        <th style="padding: 12px; text-align: left; background: rgba(255,255,255,0.02); border-bottom: 2px solid var(--border-color); font-weight: 600;">Codice Documento</th>
+                                        <th style="padding: 12px; text-align: left; background: rgba(255,255,255,0.02); border-bottom: 2px solid var(--border-color); font-weight: 600;">Descrizione / Titolo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="client-tr-preview-table-body">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 45px;">
+                                            <i class="fa-solid fa-table" style="font-size: 26px; opacity: 0.15; margin-bottom: 8px; display: block;"></i>
+                                            Nessun transmittal registrato per questo progetto.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. TABLE EDITOR SECTION -->
+            <section id="table-editor" class="view-section">
+                <div class="glass-card" style="padding: 20px 24px;">
+                    <h3 class="card-title" style="margin-bottom: 20px; display:flex; align-items:center; gap:12px;">
+                        <span><i class="fa-solid fa-table text-accent"></i> Tabella VDL Principale</span>
+                        <button id="btn-open-status-chart" class="btn btn-secondary" onclick="openStatusChartModal()" style="padding: 6px 14px; font-size: 0.8rem; margin-left: auto; display:flex; align-items:center; gap:7px;">
+                            <i class="fa-solid fa-chart-pie" style="color: var(--accent-light);"></i> Stato Documenti
+                        </button>
+                    </h3>
+                    <!-- Table Controls -->
+                    <div class="table-controls">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="grid-search" placeholder="Cerca in tutte le colonne...">
+                        </div>
+                        <div class="button-group">
+                            <button id="btn-add-row" class="btn btn-secondary">
+                                <i class="fa-solid fa-plus text-accent"></i> Riga Documento
+                            </button>
+                            <button id="btn-add-cycle" class="btn btn-secondary" style="border-color: var(--accent-light); color: var(--accent-light);">
+                                <i class="fa-solid fa-layer-group"></i> Aggiungi Ciclo Revisione
+                            </button>
+                            <button id="btn-save-grid" class="btn btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> Salva Modifiche
+                            </button>
+                            <button id="btn-reset-filters" class="btn btn-secondary">
+                                <i class="fa-solid fa-filter-circle-xmark"></i> Rimuovi Filtri
+                            </button>
+                            <button id="btn-check-suppliers" class="btn btn-secondary" style="border-color: #f59e0b; color: #f59e0b;">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Check Fornitori
+                            </button>
+                            <button id="btn-export-excel" class="btn btn-secondary">
+                                <i class="fa-solid fa-file-excel" style="color: #22c55e;"></i> Esporta Excel
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Excel Grid Wrapper -->
+                    <div class="grid-wrapper">
+                        <table class="vdl-grid" id="vdl-grid">
+                            <thead id="vdl-grid-head">
+                                <!-- Dynamic headers will be injected here -->
+                            </thead>
+                            <tbody id="vdl-grid-body">
+                                <tr>
+                                    <td colspan="100%" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                        <i class="fa-solid fa-table-list" style="font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.3;"></i>
+                                        Carica una VDL per visualizzare la tabella dei documenti.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Grid Footer stats -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; font-size: 12px; color: var(--text-muted);">
+                        <div>
+                            Righe visualizzate: <span id="lbl-shown-rows" style="font-weight: 600; color: white;">0</span> di <span id="lbl-total-rows" style="font-weight: 600; color: white;">0</span>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-circle-question" style="margin-right: 4px;"></i> Doppio clic su una cella per modificare il contenuto. Le celle modificate mostrano un triangolo in alto a sinistra.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.B SUPPLIER VDL EDITOR SECTION -->
+            <section id="supplier-vdl-editor" class="view-section">
+                <div class="glass-card" style="padding: 20px 24px;">
+                    <h3 class="card-title" style="margin-bottom: 20px;">
+                        <i class="fa-solid fa-table-list text-accent"></i> VDL Fornitori
+                    </h3>
+
+                    <!-- Alert when no project is loaded -->
+                    <div class="project-warning" id="warning-vdl-fornitore" style="padding: 20px; text-align: center; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; margin-bottom: 20px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; color: #f59e0b; margin-bottom: 10px; display: block;"></i>
+                        <span style="font-size: 14px; font-weight: 500; color: #f59e0b;">Nessun Progetto Attivo</span>
+                        <p class="text-muted" style="font-size: 12px; margin-top: 6px; margin-bottom: 0;">Seleziona un progetto attivo dal menu in alto per abilitare la gestione della VDL Fornitori.</p>
+                    </div>
+
+                    <div id="form-vdl-fornitore" style="display: none;">
+                        <!-- Supplier Selection & Upload Zone -->
+                        <div style="display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-end; flex-wrap: wrap;">
+                            <div class="form-group" style="flex: 1; min-width: 250px; margin-bottom: 0;">
+                                <label for="supplier-vdl-select" style="font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Seleziona Fornitore:</label>
+                                <select class="form-control" id="supplier-vdl-select">
+                                    <option value="">Scegli Fornitore...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="file" id="supplier-vdl-file-input" accept=".xlsx,.xls,.csv" style="display: none;">
+                                <button class="btn btn-primary" id="btn-import-supplier-vdl" onclick="document.getElementById('supplier-vdl-file-input').click()" disabled>
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Importa / Sovrascrivi Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Table Controls -->
+                        <div class="table-controls">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="supplier-grid-search" placeholder="Cerca in tutte le colonne...">
+                            </div>
+                            <div class="button-group">
+                                <button id="btn-add-supplier-cycle" class="btn btn-secondary" style="border-color: var(--accent-light); color: var(--accent-light);" disabled>
+                                    <i class="fa-solid fa-layer-group"></i> Aggiungi Ciclo Revisione
+                                </button>
+                                <button id="btn-save-supplier-grid" class="btn btn-primary" disabled>
+                                    <i class="fa-solid fa-floppy-disk"></i> Salva Modifiche
+                                </button>
+                                <button id="btn-reset-supplier-filters" class="btn btn-secondary" disabled>
+                                    <i class="fa-solid fa-filter-circle-xmark"></i> Rimuovi Filtri
+                                </button>
+                                <button id="btn-export-supplier-excel" class="btn btn-secondary" disabled>
+                                    <i class="fa-solid fa-file-excel" style="color: #22c55e;"></i> Esporta Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid Wrapper -->
+                        <div class="grid-wrapper" style="margin-top: 16px;">
+                            <table class="vdl-grid" id="supplier-vdl-grid">
+                                <thead id="supplier-vdl-grid-head"></thead>
+                                <tbody id="supplier-vdl-grid-body">
+                                    <tr>
+                                        <td colspan="100%" style="text-align: center; padding: 60px; color: var(--text-muted);">
+                                            <i class="fa-solid fa-hand-pointer" style="font-size: 40px; margin-bottom: 16px; display: block; opacity: 0.2;"></i>
+                                            Seleziona un fornitore dal menu a tendina per vedere o importare la sua VDL.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. REMINDER CENTER SECTION -->
+            <section id="reminder-center" class="view-section">
+                <div class="reminder-dashboard">
+                    <!-- Left Panel: Configurations -->
+                    <div class="reminder-sidebar glass-card">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-sliders text-accent"></i> 
+                            Parametri Sollecito
+                        </h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="form-group">
+                                <label for="reminder-hands-select">Attore (Hands)</label>
+                                <select class="form-control" id="reminder-hands-select">
+                                    <option value="">Seleziona un attore...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="display: none;">
+                                <label for="reminder-buffer">Tempo Scambio Documentale (gg)</label>
+                                <input type="number" class="form-control" id="reminder-buffer" value="15" min="1">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-language">Lingua Email</label>
+                                <select class="form-control" id="reminder-language">
+                                    <option value="it" selected>Italiano</option>
+                                    <option value="en">Inglese</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reminder-subject">Oggetto Email</label>
+                                <input type="text" class="form-control" id="reminder-subject" value="MISSING DOCUMENTATION - REMINDER">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-sender">Invia da (Account Outlook)</label>
+                                <input type="email" class="form-control" id="reminder-sender" placeholder="Lascia vuoto per account predefinito">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reminder-notes">Note Aggiuntive nel sollecito</label>
+                                <textarea class="form-control" id="reminder-notes" rows="4" placeholder="Inserisci note personalizzate o istruzioni che compariranno nel corpo dell'email..."></textarea>
+                            </div>
+
+                            <button id="btn-calc-reminders" class="btn btn-teal w-100" style="margin-top: 8px;">
+                                <i class="fa-solid fa-arrows-rotate"></i> Aggiorna Scadenze
+                            </button>
+                            
+                            <button id="btn-send-reminders" class="btn btn-primary w-100" disabled>
+                                <i class="fa-solid fa-paper-plane"></i> Invia Sollecito Email
+                            </button>
+                            
+                            <button id="btn-mass-mail" class="btn btn-secondary w-100" style="margin-top: 8px; border-color: var(--accent); color: var(--accent);">
+                                <i class="fa-solid fa-envelopes-bulk"></i> Genera Mail per Tutti
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Delays & Email Preview -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <!-- Delayed table -->
+                        <div class="glass-card">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-triangle-exclamation text-rose"></i> 
+                                Documenti in Ritardo Rilevati
+                            </h3>
+                            
+                            <div class="overdue-docs-table-container">
+                                <table class="overdue-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">Codice Doc</th>
+                                            <th style="width: 35%;">Titolo / Descrizione</th>
+                                            <th style="width: 15%;">Prossimo Forecast</th>
+                                            <th style="width: 15%;">Stato Corrente</th>
+                                            <th style="width: 10%; text-align: center;">Ritardo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="overdue-docs-body">
+                                        <tr>
+                                            <td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                                                Seleziona un attore (Hands) e clicca "Aggiorna Scadenze" per visualizzare i ritardi.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                La scadenza (Next issue forecast date) è calcolata prendendo l'ultimo stato registrato da destra a sinistra nella tabella VDL e sommandovi il tempo di scambio impostato. Se questa data è antecedente alla data odierna, il documento viene evidenziato in rosso come scaduto.
+                            </div>
+                        </div>
+
+                        <!-- Live Email Preview -->
+                        <div class="email-preview-container">
+                            <div class="email-preview-titlebar" style="background: #1e293b; padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+                                <div class="titlebar-dots" style="display: flex; gap: 6px;">
+                                    <span class="titlebar-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                                    <span class="titlebar-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
+                                    <span class="titlebar-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                                </div>
+                                <span class="titlebar-title" style="font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;"><i class="fa-solid fa-envelope" style="margin-right: 6px; color: var(--primary);"></i> Client Anteprima Email</span>
+                                <div style="width: 42px;"></div> <!-- Spacer to keep centered -->
+                            </div>
+                            <div class="email-preview-header">
+                                <div class="email-preview-header-row">
+                                    <span class="label">A:</span>
+                                    <span class="value" id="preview-email-to">-</span>
+                                </div>
+                                <div class="email-preview-header-row">
+                                    <span class="label">CC:</span>
+                                    <span class="value" id="preview-email-cc">-</span>
+                                </div>
+                                <div class="email-preview-header-row">
+                                    <span class="label">Oggetto:</span>
+                                    <span class="value" id="preview-email-subject">-</span>
+                                </div>
+                            </div>
+                            <div class="email-preview-body" style="padding: 0; background: #ffffff;">
+                                <div class="email-preview-placeholder" id="preview-placeholder">
+                                    <i class="fa-solid fa-envelope-open-text"></i>
+                                    <p>Anteprima Email in tempo reale</p>
+                                </div>
+                                <!-- Rendered HTML email iframe -->
+                                <iframe id="email-preview-iframe" style="display: none; border: none; width: 100%; height: 450px;"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. CONTACTS DATABASE SECTION -->
+            <section id="contacts-db" class="view-section">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                    <!-- Manual Add -->
+                    <div class="glass-card">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-user-plus text-accent"></i> 
+                            Aggiungi Singolo Contatto
+                        </h3>
+                        <form id="contact-form" style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="form-group">
+                                <label for="contact-hands">Fornitore (Hands)</label>
+                                <select class="form-control" id="contact-hands" required>
+                                    <option value="" disabled selected>Seleziona fornitore...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-to">Destinatari A:</label>
+                                <input type="text" class="form-control" id="contact-to" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-cc">Destinatari CC:</label>
+                                <input type="text" class="form-control" id="contact-cc">
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                                <button type="submit" class="btn btn-teal">
+                                    <i class="fa-solid fa-floppy-disk"></i> Salva
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Excel Upload -->
+                    <div class="glass-card">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-file-excel text-accent"></i> 
+                            Importa Rubrica da Excel
+                        </h3>
+                        <p class="text-muted" style="margin-bottom: 20px; font-size: 13px;">Carica un file Excel con le colonne: <strong>Nome fornitore, PM fornitore, PE fornitore, PM interno, PE interno, DC fornitore</strong>.</p>
+                        
+                        <div class="upload-zone" id="contact-upload-zone" style="min-height: 150px; padding: 20px;">
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon" style="font-size: 32px; margin-bottom: 10px;"></i>
+                            <input type="file" id="contact-file-input" accept=".xlsx,.xls,.csv" style="display: none;">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('contact-file-input').click()">
+                                <i class="fa-solid fa-file-import"></i> Seleziona Template Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h3 class="card-title"><i class="fa-solid fa-address-book text-accent"></i> Rubrica Contatti per Attore</h3>
+                    <div class="contacts-grid" id="contacts-grid">
+                        <!-- Contact Cards will be injected dynamically -->
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fa-solid fa-address-book" style="font-size: 32px; margin-bottom: 12px; display: block; opacity: 0.3;"></i>
+                            Nessun contatto configurato in rubrica.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4.1 SUPPLIERS DB SECTION -->
+            <section id="suppliers-db" class="view-section">
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                    <!-- Left column: Add/Edit Supplier Form & Project Assignment -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="glass-card">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-user-plus text-accent"></i> 
+                                <span id="supplier-form-title">Nuovo Fornitore</span>
+                            </h3>
+                            <form id="supplier-form">
+                                <input type="hidden" id="supplier-id">
+                                <div class="form-group">
+                                    <label for="supplier-name">Nome Fornitore:</label>
+                                    <input type="text" class="form-control" id="supplier-name" required placeholder="Es. Supplier SpA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="supplier-item">Item di Fornitura:</label>
+                                    <input type="text" class="form-control" id="supplier-item" required placeholder="Es. Valvole, Piping, Pumps">
+                                </div>
+                                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                                    <button type="button" class="btn btn-secondary" id="btn-cancel-supplier-edit" style="display: none;">
+                                        Annulla
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="btn-save-supplier">
+                                        <i class="fa-solid fa-floppy-disk"></i> Salva
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Active Project Supplier Assignment -->
+                        <div class="glass-card">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-folder-tree text-rose"></i> 
+                                Collega a Progetto Attivo
+                            </h3>
+                            <p class="text-muted" style="font-size: 12px; margin-bottom: 15px;">Seleziona i fornitori da assegnare al progetto selezionato in alto.</p>
+                            <div id="project-suppliers-checklist" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                                <!-- Assigned checkboxes loaded here -->
+                                <div style="text-align: center; color: var(--text-muted); font-size: 12px;">Seleziona un progetto attivo.</div>
+                            </div>
+                            <div style="text-align: right; margin-top: 15px;">
+                                <button type="button" class="btn btn-teal" id="btn-save-project-suppliers" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-circle-check"></i> Salva Collegamenti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right column: Global Suppliers Registry List -->
+                    <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+                        <h3 class="card-title"><i class="fa-solid fa-users text-accent"></i> Registro Globale Fornitori</h3>
+                        <div style="flex: 1; overflow-x: auto; overflow-y: auto; min-height: 400px;">
+                            <table class="grid-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px; text-align: center;">ID</th>
+                                        <th>Nome Fornitore</th>
+                                        <th>Item di Fornitura</th>
+                                        <th style="width: 120px; text-align: center;">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliers-table-body">
+                                    <!-- Dynamic rows loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4.2 TRANSMITTAL FORNITORE IN SECTION -->
+            <section id="transmittal-fornitore-in" class="view-section">
+                <!-- Select supplier and transmittal info -->
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="glass-card" id="warning-tr-fornitore-in" style="display: block;">
+                            <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-rose"></i> Progetto Non Selezionato</h3>
+                            <p class="text-muted">Seleziona un progetto attivo in alto per registrare i transmittal del fornitore.</p>
+                        </div>
+                        <div class="glass-card" id="form-tr-fornitore-in" style="display: none;">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-file-circle-arrow-down text-accent"></i> 
+                                Ricezione Transmittal Fornitore (IN)
+                            </h3>
+                            <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                                Registra un documento ricevuto dal fornitore. Il sistema compilerà automaticamente i campi <strong>TR In</strong>, <strong>Return Code</strong> e <strong>Return Date</strong> nella VDL del fornitore.
+                            </p>
+                            <form id="tr-fornitore-in-form" style="display: flex; flex-direction: column; gap: 16px;">
+                                <div class="form-group">
+                                    <label for="tr-in-supplier-select">Seleziona Fornitore:</label>
+                                    <select class="form-control" id="tr-in-supplier-select" required>
+                                        <option value="">Scegli Fornitore...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-in-num">Numero Transmittal Fornitore:</label>
+                                    <input type="text" class="form-control" id="tr-in-num" required placeholder="Es. TR-SUP-VAL-001">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-in-doc">Numero Documento (dalla VDL Fornitore):</label>
+                                    <input type="text" class="form-control" id="tr-in-doc" required placeholder="Inserisci codice documento...">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                    <div class="form-group">
+                                        <label for="tr-in-code">Codice di Ritorno</label>
+                                        <input type="text" class="form-control" id="tr-in-code" required placeholder="Es. A, B, C...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tr-in-date">Data Ricezione:</label>
+                                        <input type="date" class="form-control" id="tr-in-date" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-in-notes">Note / Commenti:</label>
+                                    <textarea class="form-control" id="tr-in-notes" rows="2" placeholder="Opzionale..."></textarea>
+                                </div>
+                                <div style="margin-top: 8px;">
+                                    <button type="submit" class="btn btn-primary" id="btn-submit-tr-fornitore-in" style="width: 100%; padding: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-circle-check"></i> Registra Transmittal Ricevuto
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- History / Transmittals Log List -->
+                    <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+                        <h3 class="card-title"><i class="fa-solid fa-history text-accent"></i> Registro Transmittal Fornitore Ricevuti (IN)</h3>
+                        <div style="flex: 1; overflow-x: auto; overflow-y: auto; min-height: 400px;">
+                            <table class="grid-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Fornitore</th>
+                                        <th>N. Transmittal</th>
+                                        <th>Documenti Inclusi</th>
+                                        <th style="width: 80px; text-align: center;">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tr-in-history-table-body">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">Nessun transmittal ricevuto registrato.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4.3 TRANSMITTAL FORNITORE OUT SECTION -->
+            <section id="transmittal-fornitore-out" class="view-section">
+                <!-- Select supplier and transmittal info -->
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="glass-card" id="warning-tr-fornitore-out" style="display: block;">
+                            <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-rose"></i> Progetto Non Selezionato</h3>
+                            <p class="text-muted">Seleziona un progetto attivo in alto per registrare i transmittal di ritorno al fornitore.</p>
+                        </div>
+                        <div class="glass-card" id="form-tr-fornitore-out" style="display: none;">
+                            <h3 class="card-title">
+                                <i class="fa-solid fa-file-circle-arrow-up text-accent"></i> 
+                                Invio Transmittal a Fornitore (OUT)
+                            </h3>
+                            <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                                Registra un documento inviato al fornitore. Il sistema compilerà automaticamente i campi <strong>TR Out</strong> e <strong>Actual Date</strong> nella VDL del fornitore.
+                            </p>
+                            <form id="tr-fornitore-out-form" style="display: flex; flex-direction: column; gap: 16px;">
+                                <div class="form-group">
+                                    <label for="tr-out-supplier-select">Seleziona Fornitore:</label>
+                                    <select class="form-control" id="tr-out-supplier-select" required>
+                                        <option value="">Scegli Fornitore...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-out-num">Numero Transmittal Out:</label>
+                                    <input type="text" class="form-control" id="tr-out-num" required placeholder="Es. TR-OUT-VAL-001">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-out-doc">Numero Documento (dalla VDL Fornitore):</label>
+                                    <input type="text" class="form-control" id="tr-out-doc" required placeholder="Inserisci codice documento...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-out-date">Data Invio:</label>
+                                    <input type="date" class="form-control" id="tr-out-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tr-out-notes">Note / Commenti:</label>
+                                    <textarea class="form-control" id="tr-out-notes" rows="2" placeholder="Opzionale..."></textarea>
+                                </div>
+                                <div style="margin-top: 8px;">
+                                    <button type="submit" class="btn btn-teal" id="btn-submit-tr-fornitore-out" style="width: 100%; padding: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-circle-check"></i> Registra Transmittal Inviato
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- History / Transmittals Log List -->
+                    <div class="glass-card" style="display: flex; flex-direction: column; height: 100%;">
+                        <h3 class="card-title"><i class="fa-solid fa-history text-teal"></i> Registro Transmittal Inviati a Fornitori (OUT)</h3>
+                        <div style="flex: 1; overflow-x: auto; overflow-y: auto; min-height: 400px;">
+                            <table class="grid-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Fornitore</th>
+                                        <th>N. Transmittal</th>
+                                        <th>Documenti Inclusi</th>
+                                        <th style="width: 80px; text-align: center;">Azioni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tr-out-history-table-body">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px;">Nessun transmittal di invio registrato.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. SETTINGS SECTION -->
+            <section id="settings-section" class="view-section">
+                <div class="glass-card">
+                    <h3 class="card-title">
+                        <i class="fa-solid fa-gears text-accent"></i> 
+                        Configurazione Canali Invio Email e Impostazioni
+                    </h3>
+                    
+                    <form id="settings-form" style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="form-group">
+                            <label style="font-weight: 600; margin-bottom: 8px;">Canale Primario di Spedizione</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                
+                                <!-- Option 1: Microsoft Outlook Desktop -->
+                                <div class="form-control" style="padding: 16px; display: flex; align-items: flex-start; gap: 12px; height: auto; cursor: pointer; position: relative;">
+                                    <input type="radio" name="email_mode" value="outlook" id="mode-outlook" style="margin-top: 3px;">
+                                    <label for="mode-outlook" class="settings-radio-label">
+                                        <span style="display: block; font-weight: 600; color: white; margin-bottom: 4px;">
+                                            <i class="fa-brands fa-microsoft" style="color: #0078d4; margin-right: 6px;"></i> Outlook Desktop COM
+                                        </span>
+                                        <span class="text-muted" style="font-size: 11px; display: block; line-height: 1.4;">
+                                            Utilizza l'applicazione Outlook installata localmente sul tuo PC per creare le bozze. <strong>Nessuna configurazione necessaria!</strong>
+                                        </span>
+                                    </label>
+                                </div>
+                                
+                                <!-- Option 2: Generic SMTP Server -->
+                                <div class="form-control" style="padding: 16px; display: flex; align-items: flex-start; gap: 12px; height: auto; cursor: pointer; position: relative;">
+                                    <input type="radio" name="email_mode" value="smtp" id="mode-smtp" style="margin-top: 3px;">
+                                    <label for="mode-smtp" class="settings-radio-label">
+                                        <span style="display: block; font-weight: 600; color: white; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-server" style="color: var(--accent); margin-right: 6px;"></i> Server SMTP Aziendale
+                                        </span>
+                                        <span class="text-muted" style="font-size: 11px; display: block; line-height: 1.4;">
+                                            Invia le email in modo silente tramite un server di posta in background (SMTP, Gmail, Office365, server interno).
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <!-- Option 3: Local Simulation Mock -->
+                                <div class="form-control" style="padding: 16px; display: flex; align-items: flex-start; gap: 12px; height: auto; cursor: pointer; position: relative;">
+                                    <input type="radio" name="email_mode" value="mock" id="mode-mock" style="margin-top: 3px;">
+                                    <label for="mode-mock" class="settings-radio-label">
+                                        <span style="display: block; font-weight: 600; color: white; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-code-compare" style="color: #f59e0b; margin-right: 6px;"></i> Simulatore Locale (Mock)
+                                        </span>
+                                        <span class="text-muted" style="font-size: 11px; display: block; line-height: 1.4;">
+                                            Salva l'email generata come file locale `.html` all'interno della cartella `mock_emails/` del progetto per testare il layout.
+                                        </span>
+                                    </label>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <!-- SMTP Parameters Settings (Accordion/collapsible based on SMTP choice) -->
+                        <div id="smtp-settings-panel" style="display: none; border-top: 1px solid var(--border); padding-top: 20px;">
+                            <h4 style="font-family: inherit; margin-bottom: 16px; font-weight: 600; color: white;">
+                                <i class="fa-solid fa-network-wired text-rose"></i> Parametri Connessione SMTP
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="setting-sender">Indirizzo Email Mittente (From:)</label>
+                                    <input type="email" class="form-control" id="setting-sender" placeholder="vdl-manager@azienda.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-server">Server SMTP</label>
+                                    <input type="text" class="form-control" id="setting-server" placeholder="smtp.office365.com o mail.azienda.it">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-port">Porta SMTP</label>
+                                    <input type="number" class="form-control" id="setting-port" placeholder="587" value="587">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-user">Nome Utente SMTP</label>
+                                    <input type="text" class="form-control" id="setting-user" placeholder="username o email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-password">Password SMTP</label>
+                                    <input type="password" class="form-control" id="setting-password" placeholder="password">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- General Settings Parameters -->
+                        <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                            <h4 style="font-family: inherit; margin-bottom: 16px; font-weight: 600; color: white;">
+                                <i class="fa-solid fa-business-time text-accent"></i> Impostazioni Scadenze Predefinite
+                            </h4>
+                            <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                                <div class="form-group">
+                                    <label for="setting-exchange">Tempo Scambio Documentale di Default (Giorni)</label>
+                                    <input type="number" class="form-control" id="setting-exchange" value="15" min="1">
+                                </div>
+                                <div class="form-group" style="justify-content: flex-end;">
+                                    <button type="submit" class="btn btn-primary" style="height: 42px;">
+                                        <i class="fa-solid fa-floppy-disk"></i> Salva Impostazioni
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Project-Specific Settings Placeholder Warning -->
+                <div class="glass-card" id="project-settings-warning-card" style="margin-top: 30px; display: block;">
+                    <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-warning"></i> Nessun Progetto Attivo Selezionato</h3>
+                    <p class="text-muted">Seleziona un progetto attivo dal menu in alto a destra per configurare il Percorso Radice JOB (richiesto da Specifiche Progetto) e il Formato/Colonne di Revisione (richiesto da Revisione Documentazione).</p>
+                </div>
+
+                <!-- Project-Specific settings (Only if project active) -->
+                <div class="glass-card" id="project-settings-card" style="margin-top: 30px; display: none;">
+                    <h3 class="card-title">
+                        <i class="fa-solid fa-folder-tree text-accent"></i>
+                        Impostazioni Progetto Attivo: <span id="project-settings-title-name" style="color: white; font-weight: 700;">-</span>
+                    </h3>
+                    <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                        Configura il percorso radice JOB e le preferenze di revisione per questo specifico progetto.
+                    </p>
+                    <form id="project-specific-settings-form" style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="form-group">
+                            <label for="proj-job-path" style="font-weight: 600;">Percorso Radice JOB (locale)</label>
+                            <input type="text" class="form-control" id="proj-job-path" placeholder="Es. C:\Users\lbeneforti\OneDrive - Satiz TPM\Desktop\Project\JOB-123" required>
+                            <span class="text-muted" style="font-size: 11px; margin-top: 4px; display: block;">
+                                Il programma verificherà e creerà automaticamente le sottocartelle <code>Customer Specification</code> e <code>Job Documentation</code> in questo percorso.
+                            </span>
+                        </div>
+
+                        <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                            <label style="font-weight: 600; margin-bottom: 8px; display: block;">Formato Revisione</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div class="form-control" style="padding: 12px; display: flex; align-items: flex-start; gap: 10px; height: auto; cursor: pointer;">
+                                    <input type="radio" name="revision_format" value="numeric" id="rev-numeric" checked>
+                                    <label for="rev-numeric" style="cursor: pointer;">
+                                        <span style="display: block; font-weight: 600; color: white;">Numerico (00, 01, 02...)</span>
+                                        <span class="text-muted" style="font-size: 11px; display: block;">Revisione standard a due cifre.</span>
+                                    </label>
+                                </div>
+                                <div class="form-control" style="padding: 12px; display: flex; align-items: flex-start; gap: 10px; height: auto; cursor: pointer;">
+                                    <input type="radio" name="revision_format" value="alphabetic" id="rev-alphabetic">
+                                    <label for="rev-alphabetic" style="cursor: pointer;">
+                                        <span style="display: block; font-weight: 600; color: white;">Alfabetico (A, B, C...)</span>
+                                        <span class="text-muted" style="font-size: 11px; display: block;">Revisione con lettere maiuscole.</span>
+                                    </label>
+                                </div>
+                                <div class="form-control" style="padding: 12px; display: flex; align-items: flex-start; gap: 10px; height: auto; cursor: pointer;">
+                                    <input type="radio" name="revision_format" value="combo" id="rev-combo">
+                                    <label for="rev-combo" style="cursor: pointer;">
+                                        <span style="display: block; font-weight: 600; color: white;">Combo (A, B... poi 00, 01...)</span>
+                                        <span class="text-muted" style="font-size: 11px; display: block;">Combo per revisioni di approvazione/lavoro.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                            <label style="font-weight: 600; margin-bottom: 8px; display: block;">Colonne da Visualizzare in Revisione Documentazione</label>
+                            <p class="text-muted" style="font-size: 12px; margin-bottom: 12px;">Seleziona quali colonne del progetto visualizzare nel foglio di tracciamento delle revisioni.</p>
+                            <div id="revision-columns-selector-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; max-height: 200px; overflow-y: auto; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: rgba(0,0,0,0.2);">
+                                <!-- Checkboxes will be populated dynamically -->
+                            </div>
+                        </div>
+
+                        <div style="border-top: 1px solid var(--border); padding-top: 20px; text-align: right;">
+                            <button type="submit" class="btn btn-teal" style="height: 42px;">
+                                <i class="fa-solid fa-circle-check"></i> Salva Impostazioni Progetto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Diagnostics & Logging Card -->
+                <div class="glass-card" style="margin-top: 30px;">
+                    <h3 class="card-title">
+                        <i class="fa-solid fa-bug text-rose"></i>
+                        Diagnostica e Log di Errore
+                    </h3>
+                    <p class="text-muted" style="font-size: 13px; margin-bottom: 20px;">
+                        In caso di anomalie dell'applicazione, puoi scaricare il file dei log di errore del server o azzerarlo.
+                    </p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary" id="btn-download-error-log" style="height: 42px;">
+                            <i class="fa-solid fa-file-arrow-down"></i> Scarica Log Errori (backend_errors.log)
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btn-clear-error-log" style="height: 42px;">
+                            <i class="fa-solid fa-trash-can"></i> Cancella Log Errori
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Projects Recap (Only for Admin role) -->
+                <div class="glass-card" id="settings-admin-projects-card" style="margin-top: 30px; display: none;">
+                    <div class="admin-users-header">
+                        <h3 class="card-title" style="margin-bottom: 0;">
+                            <i class="fa-solid fa-folder-tree text-rose"></i> 
+                            Gestione Progetti Registrati (Amministratore)
+                        </h3>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: 20px;">
+                        Visualizza il riepilogo di tutti i progetti registrati nel database ed eliminali definitivamente se necessario.
+                    </p>
+                    
+                    <div class="admin-users-table-container">
+                        <table class="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome Progetto</th>
+                                    <th>Company</th>
+                                    <th>Contractor</th>
+                                    <th>Data Creazione</th>
+                                    <th style="width: 120px; text-align: right;">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="settings-projects-list">
+                                <!-- Dynamic project list -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- PROJECT SPECIFICATIONS SECTION -->
+            <section id="project-specifications" class="view-section">
+                <div class="glass-card" id="warning-specifications" style="display: block;">
+                    <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-rose"></i> Progetto Non Selezionato o Impostazioni non configurate</h3>
+                    <p class="text-muted">Seleziona un progetto attivo e configura il percorso JOB nelle Impostazioni per gestire le specifiche di progetto.</p>
+                </div>
+                <div id="main-specifications-container" style="display: none;">
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                        <!-- Upload Specification Card -->
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="glass-card" style="height: fit-content; margin-bottom: 0;">
+                                <h3 class="card-title"><i class="fa-solid fa-file-arrow-up text-accent"></i> Carica Nuova Specifica</h3>
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 16px;">I file verranno caricati e salvati sul disco nella sottocartella <code>Customer Specification</code> del progetto.</p>
+                                
+                                <div id="spec-drop-zone" class="upload-drop-zone" style="padding: 30px; border: 2px dashed var(--border); border-radius: 8px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02); transition: all 0.3s ease;">
+                                    <i class="fa-solid fa-file-pdf text-accent" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
+                                    <span style="font-size: 13px; color: var(--text-muted); display: block;">Trascina qui i file o clicca per sfogliare</span>
+                                    <input type="file" id="spec-file-input" style="display: none;" multiple>
+                                </div>
+                            </div>
+
+                            <!-- NotebookLM Search Card -->
+                            <div class="glass-card" style="height: fit-content;">
+                                <h3 class="card-title"><i class="fa-solid fa-brain text-accent"></i> Notebook Specifica (Cerca nei PDF)</h3>
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 12px;">Inserisci una parola chiave o una domanda per cercare testo specifico all'interno di tutti i PDF delle specifiche di progetto.</p>
+                                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                                    <input type="text" id="notebook-search-input" class="form-control" placeholder="Cerca o fai una domanda..." style="flex: 1; height: 38px; font-size: 13px;">
+                                    <button id="notebook-search-btn" class="btn btn-accent" style="height: 38px; width: 44px; display: flex; align-items: center; justify-content: center; padding: 0;">
+                                        <i class="fa-solid fa-paper-plane" style="font-size: 14px;"></i>
+                                    </button>
+                                </div>
+                                <div id="notebook-loading" style="display: none; text-align: center; padding: 15px 0;">
+                                    <i class="fa-solid fa-circle-notch fa-spin text-accent" style="font-size: 20px; margin-right: 8px;"></i>
+                                    <span style="font-size: 12px; color: var(--text-muted);">Estrazione e ricerca nei file in corso...</span>
+                                </div>
+                                <div id="notebook-results-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+                                    <!-- Results injected dynamically -->
+                                    <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 6px; background: rgba(0,0,0,0.05);">
+                                        Fai una domanda per analizzare i PDF
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specifications List Card -->
+                        <div class="glass-card" style="display: flex; flex-direction: column; min-height: 450px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                <h3 class="card-title" style="margin-bottom: 0;"><i class="fa-solid fa-list-check text-accent"></i> Registro Specifiche Tecniche</h3>
+                                <div style="position: relative; max-width: 250px;">
+                                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 12px;"></i>
+                                    <input type="text" class="form-control" id="spec-search" placeholder="Filtra specifiche..." style="padding-left: 30px; font-size: 12px; height: 34px;">
+                                </div>
+                            </div>
+
+                            <div style="flex: 1; overflow-x: auto; overflow-y: auto;">
+                                <table class="grid-table" style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: left; padding: 12px;">Nome File</th>
+                                            <th style="width: 100px; text-align: left; padding: 12px;">Estensione</th>
+                                            <th style="width: 120px; text-align: left; padding: 12px;">Dimensione</th>
+                                            <th style="width: 180px; text-align: left; padding: 12px;">Ultima Modifica</th>
+                                            <th style="width: 120px; text-align: center; padding: 12px;">Azioni</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="specifications-table-body">
+                                        <!-- Injected dynamically -->
+                                        <tr><td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">Nessuna specifica trovata nella cartella.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REVISIONE DOCUMENTAZIONE SECTION -->
+            <section id="revisione-documentazione" class="view-section">
+                <div class="glass-card" id="warning-revisions" style="display: block;">
+                    <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation text-rose"></i> Progetto Non Selezionato o Impostazioni non configurate</h3>
+                    <p class="text-muted">Seleziona un progetto attivo e configura le impostazioni di revisione per visualizzare il tracciamento.</p>
+                </div>
+                <div id="main-revisions-container" style="display: none; height: calc(100vh - 120px); flex-direction: column;">
+                    <div class="glass-card" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div>
+                                <h3 class="card-title" style="margin-bottom: 4px;"><i class="fa-solid fa-code-compare text-accent"></i> Registro Revisione Documentazione</h3>
+                                <p class="text-muted" style="font-size: 12px;">Foglio di riepilogo con visualizzazione delle revisioni storiche da 00/A a 10. Le celle indicano i codici di ritorno o lo stato di avanzamento per ciascun invio.</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="position: relative; max-width: 250px;">
+                                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 12px;"></i>
+                                    <input type="text" class="form-control" id="revision-search" placeholder="Filtra risultati..." style="padding-left: 30px; font-size: 12px; height: 34px;">
+                                </div>
+                                <span class="text-muted" style="font-size: 12px;">
+                                    Format: <strong id="revision-format-badge" class="badge badge-admin" style="font-size: 11px;">Numerico</strong>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Revisions Grid Container -->
+                        <div style="flex: 1; overflow: auto; border: 1px solid var(--border); border-radius: 8px;">
+                            <table class="grid-table" id="revision-grid-table" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12px;">
+                                <thead id="revision-grid-thead">
+                                    <!-- Populated dynamically via JS -->
+                                </thead>
+                                <tbody id="revision-grid-tbody">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- 9. ADMIN ACCESS CONTROL SECTION -->
+            <section id="admin-access-control" class="view-section">
+                <div class="glass-card">
+                    <div class="admin-users-header">
+                        <h3 class="card-title">
+                            <i class="fa-solid fa-users-gear text-rose"></i> 
+                            Gestione Accessi Utenti
+                        </h3>
+                        <button class="btn btn-teal" id="btn-admin-add-user">
+                            <i class="fa-solid fa-user-plus"></i> Nuovo Utente
+                        </button>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: 20px;">
+                        Da questo pannello amministrativo puoi monitorare gli utenti registrati nel sistema, creare nuove credenziali d'accesso, modificarne la password o il ruolo, oppure eliminarli.
+                    </p>
+                    
+                    <div class="admin-users-table-container">
+                        <table class="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username / Email</th>
+                                    <th>Ruolo</th>
+                                    <th>Password (In Chiaro)</th>
+                                    <th>Data Registrazione</th>
+                                    <th style="width: 180px; text-align: right;">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-list">
+                                <!-- Dynamic user rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-top: 30px;">
+                    <div class="admin-users-header">
+                        <h3 class="card-title" style="margin-bottom: 0;">
+                            <i class="fa-solid fa-folder-tree text-rose"></i> 
+                            Gestione Progetti Registrati
+                        </h3>
+                    </div>
+                    <p class="text-muted" style="margin-bottom: 20px;">
+                        Visualizza il riepilogo di tutti i progetti registrati nel database ed eliminali definitivamente se necessario.
+                    </p>
+                    
+                    <div class="admin-users-table-container">
+                        <table class="admin-users-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome Progetto</th>
+                                    <th>Company</th>
+                                    <th>Contractor</th>
+                                    <th>Data Creazione</th>
+                                    <th style="width: 120px; text-align: right;">Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-projects-list">
+                                <!-- Dynamic project list -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- 1. Add/Edit Document Row Modal -->
+    <div class="modal-overlay" id="doc-modal">
+        <div class="modal-container" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="doc-modal-title">Nuovo Documento VDL</h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeDocModal()"></i>
+            </div>
+            <div class="modal-body">
+                <form id="doc-modal-form">
+                    <div id="doc-form-fields-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <!-- Dynamic fields based on current columns will be injected here -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDocModal()">Annulla</button>
+                <button class="btn btn-primary" id="btn-save-doc-row">
+                    <i class="fa-solid fa-check"></i> Aggiungi Riga
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Column Header Excel-like Filter Popover (repositioned dynamically relative to trigger) -->
+    <div class="filter-popover" id="filter-popover">
+        <input type="text" class="filter-search" id="popover-search" placeholder="Cerca valore...">
+        <div class="filter-options-list" id="popover-options-list">
+            <!-- options will be injected dynamically -->
+        </div>
+        <div class="filter-popover-buttons">
+            <button class="btn btn-secondary" id="popover-btn-clear" style="padding: 4px 8px;">Azzera</button>
+            <button class="btn btn-primary" id="popover-btn-apply" style="padding: 4px 8px;">Applica</button>
+        </div>
+    </div>
+
+    <!-- 3. Status Pie Chart Modal -->
+    <div class="modal-overlay" id="status-chart-modal">
+        <div class="modal-container" style="max-width: 580px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-chart-pie" style="color: var(--accent-light);"></i> Stato Documenti — Progetto Attivo</h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeStatusChartModal()"></i>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <!-- Loading state -->
+                <div id="chart-modal-loading" style="text-align:center; padding: 40px; color: var(--text-muted);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:28px; margin-bottom:12px; display:block;"></i>
+                    Calcolo in corso...
+                </div>
+                <!-- Chart + Legend -->
+                <div id="chart-modal-content" style="display:none;">
+                    <div style="position:relative; width:100%; max-width:320px; margin:0 auto 24px;">
+                        <canvas id="status-pie-canvas"></canvas>
+                        <!-- Center total label -->
+                        <div id="chart-center-label" style="
+                            position:absolute; top:50%; left:50%;
+                            transform:translate(-50%,-50%);
+                            text-align:center; pointer-events:none;
+                        ">
+                            <div style="font-size:2rem; font-weight:800; color:#f8fafc;" id="chart-total-num">0</div>
+                            <div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Totale doc.</div>
+                        </div>
+                    </div>
+                    <!-- Legend -->
+                    <div id="chart-legend" style="display:flex; flex-direction:column; gap:10px; margin-top:8px;"></div>
+                </div>
+                <!-- Empty state -->
+                <div id="chart-modal-empty" style="display:none; text-align:center; padding:40px; color:var(--text-muted);">
+                    <i class="fa-solid fa-circle-info" style="font-size:28px; margin-bottom:12px; display:block;"></i>
+                    Nessun documento trovato per questo progetto.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Application Scripts -->
+    <script src="static/js/app.js"></script>
+    <script src="static/js/supplier_vdl.js"></script>
+
+    <script>
+    // ── Status Pie Chart Modal ──
+    let _statusPieChart = null;
+
+    async function openStatusChartModal() {
+        if (!activeProjectId) {
+            showToast('Nessun progetto attivo selezionato.', 'warning');
+            return;
+        }
+        const modal    = document.getElementById('status-chart-modal');
+        const loading  = document.getElementById('chart-modal-loading');
+        const content  = document.getElementById('chart-modal-content');
+        const empty    = document.getElementById('chart-modal-empty');
+
+        // Reset
+        loading.style.display = 'block';
+        content.style.display = 'none';
+        empty.style.display   = 'none';
+        modal.classList.add('active');
+
+        try {
+            const res  = await fetch(`/api/project/${activeProjectId}/status`);
+            const data = await res.json();
+
+            if (!res.ok || data.status !== 'success') throw new Error();
+
+            const perCode     = data.per_code     || {};
+            const pending     = data.pending      || 0;
+            const neverEmit   = data.never_emitted|| 0;
+            const total       = data.total        || 0;
+
+            if (total === 0) {
+                loading.style.display = 'none';
+                empty.style.display   = 'block';
+                return;
+            }
+
+            // Build dataset
+            const labels = [];
+            const counts = [];
+            const colors = [];
+
+            const CODE_PALETTE = [
+                '#6366f1','#a855f7','#14b8a6','#fb923c','#22c55e','#38bdf8','#e879f9','#facc15'
+            ];
+            const codeEntries = Object.entries(perCode).sort((a,b) => b[1]-a[1]);
+            codeEntries.forEach(([code, cnt], i) => {
+                labels.push(`Codice ${code}`);
+                counts.push(cnt);
+                colors.push(CODE_PALETTE[i % CODE_PALETTE.length]);
+            });
+
+            if (pending > 0) {
+                labels.push('In Attesa Ritorno');
+                counts.push(pending);
+                colors.push('#f59e0b');
+            }
+            if (neverEmit > 0) {
+                labels.push('MAI EMESSI');
+                counts.push(neverEmit);
+                colors.push('#ef4444');
+            }
+
+            // Update center total
+            document.getElementById('chart-total-num').textContent = total;
+
+            // Build legend
+            const legend = document.getElementById('chart-legend');
+            legend.innerHTML = '';
+            labels.forEach((lbl, i) => {
+                const pct = total > 0 ? ((counts[i]/total)*100).toFixed(1) : 0;
+                legend.innerHTML += `
+                    <div style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border-radius:8px; padding:8px 12px;">
+                        <span style="width:14px; height:14px; border-radius:50%; background:${colors[i]}; flex-shrink:0;"></span>
+                        <span style="flex:1; font-size:0.88rem; color:#e2e8f0;">${lbl}</span>
+                        <span style="font-weight:700; font-size:0.95rem; color:#f8fafc;">${counts[i]}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted); min-width:42px; text-align:right;">${pct}%</span>
+                    </div>`;
+            });
+
+            // Destroy old chart if present
+            if (_statusPieChart) { _statusPieChart.destroy(); _statusPieChart = null; }
+
+            const ctx = document.getElementById('status-pie-canvas').getContext('2d');
+            _statusPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: colors,
+                        borderColor: 'rgba(15,23,42,0.8)',
+                        borderWidth: 3,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    cutout: '62%',
+                    animation: { animateRotate: true, duration: 700 },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` ${ctx.label}: ${ctx.parsed} doc. (${((ctx.parsed/total)*100).toFixed(1)}%)`
+                            },
+                            backgroundColor: 'rgba(15,23,42,0.95)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#94a3b8',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 12
+                        }
+                    }
+                }
+            });
+
+            loading.style.display = 'none';
+            content.style.display = 'block';
+
+        } catch(e) {
+            loading.style.display = 'none';
+            empty.style.display   = 'block';
+            empty.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="font-size:28px; margin-bottom:12px; display:block; color:#f87171;"></i>Errore nel caricamento dei dati.';
+        }
+    }
+
+    function closeStatusChartModal() {
+        document.getElementById('status-chart-modal').classList.remove('active');
+    }
+
+    // Close on overlay click
+    document.getElementById('status-chart-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeStatusChartModal();
+    });
+    </script>
+    <!-- Cross Check Warnings Modal -->
+    <div class="modal-overlay" id="cross-check-modal">
+        <div class="modal-container" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation text-rose" style="margin-right: 8px;"></i> Anomalie Previsione Documenti Fornitore -> Cliente</h3>
+                <span class="modal-close" onclick="closeCrossCheckModal()"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                    La seguente tabella mostra i documenti in cui la <strong>Data Prevista</strong> del Cliente è antecedente a quella promessa dal Fornitore (Ritardo Fornitore).
+                </p>
+                <div class="table-responsive">
+                    <table class="overdue-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">Num. Documento</th>
+                                <th style="width: 30%;">Descrizione</th>
+                                <th style="width: 20%;">Fornitore</th>
+                                <th style="width: 15%;">Data Prevista Fornitore</th>
+                                <th style="width: 20%;">Data Prevista Cliente</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cross-check-body">
+                            <!-- Injected dynamically -->
+                            <tr><td colspan="5" style="text-align: center; padding: 20px;">Nessuna anomalia riscontrata.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 16px; text-align: right; border-top: 1px solid var(--border);">
+                <button class="btn btn-secondary" onclick="closeCrossCheckModal()">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Admin Create/Edit User Modal -->
+    <div class="modal-overlay" id="admin-user-modal">
+        <div class="modal-container" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 id="admin-user-modal-title">Crea Nuovo Utente</h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeAdminUserModal()"></i>
+            </div>
+            <div class="modal-body">
+                <form id="admin-user-form">
+                    <input type="hidden" id="admin-user-id">
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="form-group">
+                            <label for="admin-user-username">Username o Email</label>
+                            <input type="text" class="form-control" id="admin-user-username" required placeholder="Es. mario.rossi@azienda.com o ADMIN">
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-user-password">Password</label>
+                            <input type="text" class="form-control" id="admin-user-password" required placeholder="Inserisci password">
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-user-role">Ruolo Utente</label>
+                            <select class="form-control" id="admin-user-role" required>
+                                <option value="Project Manager">Project Manager</option>
+                                <option value="Document Controller">Document Controller</option>
+                                <option value="Project Engineering">Project Engineering</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAdminUserModal()">Annulla</button>
+                <button class="btn btn-primary" id="btn-admin-save-user">
+                    <i class="fa-solid fa-check"></i> Salva Utente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Dashboard Details Modal -->
+    <div class="modal-overlay" id="dashboard-details-modal">
+        <div class="modal-container" style="max-width: 950px; width: 90%;">
+            <div class="modal-header">
+                <h3 id="dashboard-details-title" style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-list-check text-accent"></i>
+                    <span>Dettagli Documenti</span>
+                </h3>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeDashboardDetailsModal()"></i>
+            </div>
+            <div class="modal-body" style="padding-top: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 15px;">
+                    <div style="position: relative; flex: 1; max-width: 320px;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px;"></i>
+                        <input type="text" class="form-control" id="dashboard-details-search" placeholder="Filtra risultati..." style="padding-left: 32px; font-size: 13px; height: 36px;">
+                    </div>
+                    <span class="text-muted" style="font-size: 13px;">
+                        Documenti trovati: <strong id="dashboard-details-count" style="color: white;">0</strong>
+                    </span>
+                </div>
+                <div class="table-responsive" style="max-height: 480px; border-radius: 8px; border: 1px solid var(--border); overflow-y: auto;">
+                    <table class="grid-table" style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+                        <thead>
+                            <tr style="background: #0f162a; position: sticky; top: 0; z-index: 5;">
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Codice Documento</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Descrizione / Titolo</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Hands (Attore)</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Promise Date</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Forecast Date</th>
+                                <th style="padding: 12px 16px; text-align: left; color: var(--text-muted); font-weight: 600;">Codice Ritorno</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-details-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 16px; text-align: right; border-top: 1px solid var(--border);">
+                <button class="btn btn-secondary" onclick="closeDashboardDetailsModal()">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Glassmorphic Login Overlay -->
+    <div id="login-overlay" style="display: none;">
+        <div class="login-card">
+            <!-- Login View -->
+            <div id="login-view-panel">
+                <div class="login-header">
+                    <span class="logo-icon">📁</span>
+                    <h2>VDL Manager Pro</h2>
+                    <p>Autorità di Accesso — Inserisci le tue credenziali</p>
+                </div>
+                
+                <form id="login-form-submit" class="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Username o Email</label>
+                        <input type="text" class="form-control" id="login-email" required placeholder="Es. admin o mail@azienda.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" class="form-control" id="login-password" required placeholder="••••••••">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100" style="margin-top: 15px; padding: 12px;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Accedi
+                    </button>
+                </form>
+                
+                <div class="login-footer-links">
+                    Non hai ancora un account? <a href="#" id="link-show-register">Registrati</a>
+                </div>
+            </div>
+            
+            <!-- Register View -->
+            <div id="register-view-panel" style="display: none;">
+                <div class="login-header">
+                    <span class="logo-icon">📁</span>
+                    <h2>Nuova Registrazione</h2>
+                    <p>Crea il tuo profilo d'accesso</p>
+                </div>
+                
+                <form id="register-form-submit" class="login-form">
+                    <div class="form-group">
+                        <label for="register-email">Username o Email</label>
+                        <input type="text" class="form-control" id="register-email" required placeholder="Es. mario.rossi@azienda.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" class="form-control" id="register-password" required placeholder="Crea password d'accesso">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-role">Seleziona il tuo Ruolo</label>
+                        <select class="form-control" id="register-role" required>
+                            <option value="Project Manager">Project Manager</option>
+                            <option value="Document Controller">Document Controller</option>
+                            <option value="Project Engineering">Project Engineering</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-teal w-100" style="margin-top: 15px; padding: 12px;">
+                        <i class="fa-solid fa-user-plus"></i> Registrati
+                    </button>
+                </form>
+                
+                <div class="login-footer-links">
+                    Hai già un account? <a href="#" id="link-show-login">Accedi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hidden file inputs for document cell upload -->
+    <input type="file" id="cell-vdl-document-file-input" style="display: none;">
+</body>
+</html>
